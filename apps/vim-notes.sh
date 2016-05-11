@@ -1,130 +1,110 @@
-#!/bin/bash
-# TODO:
+#!/usr/bin/env bash
+
+# Dotfiles Maintaince Script
+# Naming Convention: dot-something
+
+# Change this if you're in an enviorment where bashrc is not at this location
+DOT_LOC="~/.dotfiles"
+BASH_LOC="~/.bashrc.test"
+BACKUP_LOC="~/backups/."
+# If the value is 1 will zip the contents of ~/.dotfiles before backing up
+# Otherwise will dump the contents to the specified directory
+# 0 is good for git pages, etc
+# Otherwise it's good for general backups like on to a flash driv
+ZIP_BACKUP=0
 
 
-#Global variables #Change to your liking
-FILE_EXTENSION="txt"
-# Must be an absolute path, no home paths
-# NOTES_DIRECTORY='/home/tekkidd/Documents/notes'
-NOTES_DIRECTORY='/cluster/home/u330940/Documents/notes'
-NAME_FORMAT="note-`date +%Y-%m-%d`.$FILE_EXTENSION"
-BACKUP_FORMAT="backup-`date +%Y-%m-%d`"
-BACKUP_DIRECTORY="$NOTES_DIRECTORY/backups"
+# Deploys the dotfiles
+function dot-deploy {
+    print "Deploying Bash"
 
+    ## Deploy Main Prompt
+    printf "source $DOT_LOC/bash/prompt.sh\n" >> BASH_LOC
 
-function vn-vim-notes {
-    if [ ! -d "$NOTES_DIRECTORY" ]; then
-       /bin/mkdir "$NOTES_DIRECTORY"
+    ## Deploy Aliases
+    printf "source $DOT_LOC/bash/aliases.sh\n" >> BASH_LOC
+
+    ## Deploy Bash Apps
+    printf "source $DOT_LOC/apps/mkfoo.sh\n" >> BASH_LOC
+    printf "source $DOT_LOC/apps/vim-notes.sh\n" >> BASH_LOC
+    printf "source $DOT_LOC/apps/screenfetch.sh\n" >> BASH_LOC
+
+    ########################
+
+    echo "Deploying Fonts"
+    # Create the directory if it does not exist
+    if [ ! -d ~/.fonts ]; then
+        /bin/mkdir ~/.fonts
     fi
-    if [ -f ".$NAME_FORMAT.swp" ]; then
-        echo "Another instance of notes is already running"
-        return 1
+    # Copy the contents of the font's directory to the .fonts directory
+    /bin/cp fonts/. ~/.fonts/ -R
+
+    echo "Done deploying fonts, powerline fonts must be enabled manually"
+
+    ###########################
+
+    echo "Deploying vim profile"
+    # If existing vim files are found, move them to vim.old
+    if [ -d ~/.vim ]; then
+        echo ".vim found, moving to .vim.old"
+        mv ~/.vim ~/.vim.old
     fi
-    cd $NOTES_DIRECTORY
-    if [ ! -f $NAME_FORMAT ]; then
-        touch $NAME_FORMAT
-        /usr/bin/vim $NAME_FORMAT
-    else
-        /usr/bin/vim $NAME_FORMAT
+
+    if [ -f ~/.vimrc ]; then
+        echo ".vimrc found, moving to .vimrc.old"
+        mv ~/.vimrc ~/.vimrc.old
     fi
+
+    # Symbolically Link
+    /bin/ln -s ~/.dotfiles/vim/.vim ~/.vim
+    /bin/ln -s ~/.dotfiles/vim/.vimrc ~/.vimrc
+
 }
-function vn-backup {
-    # Check and make sure the notes directory exists
-    if [ ! -d $NOTES_DIRECTORY ]; then
-        echo "Notes directory does not exist"
-        echo "Run notes without the --backup argument to fix this issue"
+
+# Back up dotfiles
+# Change backup location at the top
+function dot-backup {
+    if [ $ZIP_BACKUP -eq 0 ]; then
+        dot-backup-std
+    elif [ $ZIP_BACKUP -eq 0 ]; then
+        dot-backup-zip
+    else:
+        echo "ZIP_BACKUP is non binary"
+        echo "Change var ZIP_BACKUP to either a 0 or 1"
         exit 1
     fi
-    # if the directory does not exist yet then create it
-    if [ ! -d $BACKUP_DIRECTORY ]; then
-        /bin/mkdir $BACKUP_DIRECTORY
-    fi
-
-   # Go into the directory and zip the files
-   cd $NOTES_DIRECTORY
-   /usr/bin/zip $BACKUP_FORMAT note-*
-   mv  "$BACKUP_FORMAT.zip" $BACKUP_DIRECTORY
-}
-function vn-dir {
-    if [ ! -d $NOTES_DIRECTORY ]; then
-        echo "Notes directory not found, run 'notes' to resolve this issue"
-    fi
-    cd $NOTES_DIRECTORY
-    echo `pwd`
 }
 
-function vn-special {
-    CUSTOM_NOTE="$1".$FILE_EXTENSION
-    echo $CUSTOM_NOTE
-    if [ ! -d $NOTES_DIRECTORY ]; then
-        /bin/mkdir "$NOTES_DIRECTORY"
-    fi
-    cd $NOTES_DIRECTORY
-    if [ ! -f "$1" ]; then
-        touch $CUSTOM_NOTE
-        /usr/bin/vim $CUSTOM_NOTE
-    else
-        if [ -f "$SPECIAL_NOTE".swp ]; then
-            echo "Note opened elsewhere"
-            echo "Close the note or delete the swap file"
-            return 1
-        fi
-
-        /usr/bin/vim $CUSTOM_NOTE
-    fi
-
-}
-function vn-clean {
-    echo "Removing old swap files"
-    cd $NOTES_DIRECTORY
-    /usr/bin/find . -name "*.swp" -type f -delete
-    echo "[DONE]"
+function dot-backup-zip {
+    cd $DOT_LOC
+    zip * backup.zip
+    mv backup.zip $BACKUP_LOC
+    exit 0
 }
 
-function vnhelp {
-    printf "VIM Notes v2.0\n"
-    printf "usage: notes\n"
-    printf "   or: notes [arguments]\n"
-    printf "Arguments:\n"
-    printf " -b             Backup\n"
-    printf " -d             Directory\n"
-    printf " -s             Create a special note (custom name)\n"
-    printf " --clean        Clean up the notes directory of all .swp files\n"
-    printf " -h or --help   Access vim-notes help page\n"
+function dot-backup-std {
+    cd $DOT_LOC
+    cp . $BACKUP_LOC -R -U
+    exit 0
+
 }
 
-#
-#
-#
-#
-function notes {
-    if [ $# -eq 0 ];then
-        vn-vim-notes
+function dotfiles {
+    if [ $# -eq 0 ]; then
+        echo "Not enough arguments"
+        exit 1
     else
         case "$1" in
-            -d)
-                (vn-dir)
+            --backup)
+                dot-backup
                 ;;
-            -b)
-                (vn-backup)
+            --deploy)
+                dot-deploy
                 ;;
-            -s)
-                (vn-special $2)
-                ;;
-            --clean)
-                (vn-clean)
-                ;;
-            -h)
-                (vnhelp)
-                ;;
-            --help)
-                (vnhelp)
-                ;;
-            *)
-            echo "vim-note: illegal argument"
-            return 1
-            ;;
-    esac
-fi
+            # Add force flags here for doing a zip or standard backup even when
+            # the flag at the top states otherwise
+        esac
+    fi
 }
+
 
