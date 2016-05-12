@@ -15,14 +15,16 @@ alias py='python'
 alias bashrc='vim ~/.bashrc.local'
 alias ssh='ssh -X'
 alias lsg='ls|grep'
+
+# rm confirmation                                                              
+alias rm="rm -i"                                                               
+alias rm -rf="rm -rf -i"                                                       
+                           
+
 alias dev='cd ~/bin'
 alias bin='cd ~/bin'
+alias dotfiles='cd ~/.dotfiles'
 
-
-## Gulfstream Specific
-alias lustre='cd /lustre/misc/hpc/sunny'
 
 ## Screenfetch
 alias screenfetch='~/.dotfiles/apps/screenfetch'
-
-
