@@ -1,0 +1,15 @@
+# Custom bashrc file
+# So we don't have to deal with the system provided one
+# Source in main bashrc
+
+
+# Bash files
+source ~/.dotfiles/bash/prompt.sh
+source ~/.dotfiles/bash/aliases.sh
+source ~/.dotfiles/bash/funcs.sh
+
+
+# Terminal Apps
+# Note: screenfetch is in aliases.sh
+source ~/.dotfiles/apps/mkfoo.sh
+source ~/.dotfiles/apps/vim-notes.sh

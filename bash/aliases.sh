@@ -12,17 +12,12 @@ alias LS='ls'
 
 alias vi='vim'
 alias py='python'
-alias bashrc='vim ~/.bashrc.local'
+alias bashrc='vim ~/.dotfiles/.bashrc.dotfiles'
 alias ssh='ssh -X'
 alias lsg='ls|grep'
 
-# rm confirmation                                                              
-alias rm="rm -i"                                                               
-alias rm -rf="rm -rf -i"                                                       
-                           
 
-alias dev='cd ~/bin'
-alias bin='cd ~/bin'
+
 alias dotfiles='cd ~/.dotfiles'
 
 
