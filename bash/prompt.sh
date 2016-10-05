@@ -37,8 +37,8 @@ readonly _BG_YELLOW="\[\033[1;43m\]"
 # git status colors
 
 
-readonly GIT_BRANCH_SYMBOL='⑂ '
-readonly GIT_BRANCH_CHANGED_SYMBOL='+'
+readonly GIT_BRANCH_SYMBOL=' '
+readonly GIT_BRANCH_CHANGED_SYMBOL='*'
 readonly GIT_NEED_PUSH_SYMBOL='⇡'
 readonly GIT_NEED_PULL_SYMBOL='⇣'
 readonly RESET="\[$(tput sgr0)\]"
@@ -63,7 +63,7 @@ case "$(uname)" in
         readonly _PS_SYMBOL='§'
         ;;
     *)
-        readonly _PS_SYMBOL='%'
+        readonly _PS_SYMBOL='$'
 esac
 
 
@@ -111,12 +111,12 @@ function ps1() {
     fi
 
     # print time if we can
-    if hash tput 2>/dev/null; then
-        printf "$(_time)"
-    fi
+    # if hash tput 2>/dev/null; then
+    #     printf "$(_time)"
+    # fi
 
     # set PS1
-    PS1="${_FG_BLACK}${_BG_GRAY_LT} $(hostname -s) "
+    PS1="${_BG_GRAY_LT}${_FG_GRAY} $(hostname) "
     PS1+="${_FG_GRAY_LT}${_BG_CYAN_LT}${_FG_WHITE} \w "
     PS1+="${_BG_BLUE_LT}$(git_info)${_FG_WHITE}"
     PS1+="${_FG_CYAN}${BG_EXIT}${_FG_WHITE} $_PS_SYMBOL "
