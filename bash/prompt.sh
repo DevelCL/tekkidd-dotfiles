@@ -117,7 +117,7 @@ function ps1() {
 
     # set PS1
     PS1="${_BG_GRAY_LT}${_FG_GRAY} $(hostname) "
-    PS1+="${_FG_GRAY_LT}${_BG_CYAN_LT}${_FG_WHITE} \w "
+    PS1+="${_FG_GRAY_LT}${_BG_CYAN_LT}${_FG_WHITE} \W "
     PS1+="${_BG_BLUE_LT}$(git_info)${_FG_WHITE}"
     PS1+="${_FG_CYAN}${BG_EXIT}${_FG_WHITE} $_PS_SYMBOL "
     PS1+="${_NO_COLOR}${FG_EXIT}${_NO_COLOR} "
@@ -125,8 +125,8 @@ function ps1() {
 
 }
 # Directory Colors
-LS_COLORS='di=1:fi=0:ln=31:pi=5:so=5:bd=5:cd=5:or=31:mi=0:ex=35:*.rpm=90'
-export LS_COLORS
+# LS_COLORS='di=1:fi=0:ln=31:pi=5:so=5:bd=5:cd=5:or=31:mi=0:ex=35:*.rpm=90'
+# export LS_COLORS
 
 
 # Run function for each prompt
