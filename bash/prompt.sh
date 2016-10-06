@@ -39,8 +39,8 @@ readonly _BG_YELLOW="\[\033[1;43m\]"
 
 readonly GIT_BRANCH_SYMBOL=' '
 readonly GIT_BRANCH_CHANGED_SYMBOL='*'
-readonly GIT_NEED_PUSH_SYMBOL='⇡'
-readonly GIT_NEED_PULL_SYMBOL='⇣'
+readonly GIT_NEED_PUSH_SYMBOL='⭱'
+readonly GIT_NEED_PULL_SYMBOL='⭳'
 readonly RESET="\[$(tput sgr0)\]"
 readonly BG_BLUE="\[$(tput setab 4)\]"
 readonly BG_BASE03="\[$(tput setab 8)\]"
