@@ -3,7 +3,7 @@
 
 # Create a .dotfiles driectory if it does not already exit
 if [ ! -d ~/.dotfiles ]; then
-    mkdir /bin/mkdir ~/.dotfiles
+    mkdir ~/.dotfiles
 fi
 
 /bin/cp -r apps ~/.dotfiles/.
